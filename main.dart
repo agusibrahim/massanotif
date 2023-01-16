@@ -18,7 +18,7 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) {
   Hive.init("dataku.db");
 
   Hive.openBox("trx");
-  return serve(handler, ip, port);
+  return serve(handler, ip, 7765);
 }
 
 void checkForStatus() {
