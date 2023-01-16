@@ -5,6 +5,7 @@
 [![Powered by Dart Frog](https://img.shields.io/endpoint?url=https://tinyurl.com/dartfrog-badge)](https://dartfrog.vgv.dev)
 
 ### Signaling for massa blockchain transaction
+Please check [Github Actions Artifact](https://github.com/agusibrahim/massanotif/actions/workflows/buildapp.yml) or [Release](https://github.com/agusibrahim/massanotif/releases/new) for binary
 
 [license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [license_link]: https://opensource.org/licenses/MIT
