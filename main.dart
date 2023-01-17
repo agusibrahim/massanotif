@@ -35,7 +35,7 @@ void checkForStatus() {
       var result = res.data['result'] as List<dynamic>;
       if (result.isEmpty) {
         box.delete(key);
-        sendNotif(key, "done");
+        sendNotif(key, {"trxid": key, "status": "OK"});
       } else {
         print("status: ${result.first['is_final']}");
         if (result.first['is_final'] as bool) {
@@ -53,6 +53,7 @@ void checkForStatus() {
           if (resultd.isEmpty) {
             data["status"] = "OK";
             data["err"] = "";
+            data["trxid"] = key;
             data["op"] = result.first['operation'];
 
             sendNotif(key, data, toreceiver: true);
@@ -62,6 +63,7 @@ void checkForStatus() {
           var errjson = json.decode("${resultd.first['data']}");
           if (errjson['massa_execution_error'] != null) {
             data["status"] = "ER";
+            data["trxid"] = key;
             data["err"] = errjson['massa_execution_error'];
             data["op"] = result.first['operation'];
           }
@@ -81,7 +83,10 @@ void sendNotif(key, data, {bool toreceiver = false}) {
       Dio(BaseOptions(headers: {
         "Content-Type": "application/json",
         "Authorization": "key=${Platform.environment['FCMKEY']}",
-      })).post("https://fcm.googleapis.com/fcm/send", data: {"to": "/topics/w_$recp", "data": data}).then((d) {
+      })).post("https://fcm.googleapis.com/fcm/send", data: {
+        "to": "/topics/w_$recp",
+        "data": {"trxid": key, "data": data, "receive": true}
+      }).then((d) {
         print("notif sent to receiver $recp! ${d.data}");
       });
     }
