@@ -54,7 +54,9 @@ void checkForStatus() {
             data["status"] = "OK";
             data["err"] = "";
             data["op"] = result.first['operation'];
-            sendNotif(key, data);
+
+            sendNotif(key, data, toreceiver: true);
+            //sendNotif(key, data);
             return;
           }
           var errjson = json.decode("${resultd.first['data']}");
@@ -70,7 +72,20 @@ void checkForStatus() {
   });
 }
 
-void sendNotif(key, data) {
+void sendNotif(key, data, {bool toreceiver = false}) {
+  if (toreceiver) {
+    var op = data['op']['content']['op'] as Map<String, dynamic>;
+    if (op.containsKey("Transaction")) {
+      var trx = op['Transaction'];
+      var recp = trx['recipient_address'];
+      Dio(BaseOptions(headers: {
+        "Content-Type": "application/json",
+        "Authorization": "key=${Platform.environment['FCMKEY']}",
+      })).post("https://fcm.googleapis.com/fcm/send", data: {"to": "/topics/w_$recp", "data": data}).then((d) {
+        print("notif sent to receiver $recp! ${d.data}");
+      });
+    }
+  }
   Dio(BaseOptions(headers: {
     "Content-Type": "application/json",
     "Authorization": "key=${Platform.environment['FCMKEY']}",
